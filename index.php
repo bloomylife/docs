@@ -109,7 +109,7 @@ foreach ($menuConfig[$m]['method'] as $menu) {
         <ul class="nav bs-docs-sidenav">
             <?php
             foreach ($menuConfig[$m]['method'] as $menu) {
-            $docs = lib::getDocs($m, $menu);
+            $docs = lib::getDocs($m, $menu); 
             if ($docs) {?>
             <li>
                 <a href="#<?php echo $menu;?>"><?php echo $docs['title'];?></a>

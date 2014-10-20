@@ -9,7 +9,8 @@ return array(
                 'reg',
                 'login',
                 'changePassword',
-                'forgetPassword'
+                'forgetPassword',
+				'code-send'
 
             )
         ),

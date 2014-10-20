@@ -14,10 +14,14 @@ class html {
     public $docs;
     //配置事项
     public $docsConfig;
+	//是否有其他模型下的文件
+	public $hasOtherModule = false;
 
     public function __construct($m, $menu, $docs, $docsConfig) {
         $this->m = $m;
         $this->menu = $menu;
+		lib::resolveMethod($this->m, $this->menu);
+		if ($this->m != $m) $this->hasOtherModule = true;
         $this->docs = $docs;
         $this->docsConfig = $docsConfig;
     }
@@ -103,7 +107,8 @@ class html {
         if ($isChild){
             return '<h4>'.$itemValue.'</h4>';
         } else {
-            return '<h3 id="'.$this->menu.'-'.$item.'">'. $itemValue .'</h3>';
+			$menus = $this->hasOtherModule ? $this->m.'-'.$this->menu : $this->menu;
+            return '<h3 id="'.$menus.'-'.$item.'">'. $itemValue .'</h3>';
         }
     }
 
