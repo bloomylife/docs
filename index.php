@@ -8,6 +8,8 @@ $menuConfig = $docsConfig['menu'];
 $itemsConfig = $docsConfig['items'];
 
 $m = isset($_GET['m']) && array_key_exists($_GET['m'], $menuConfig) ? $_GET['m'] : 'user';
+
+html::$commonDataConfig = include('docs/common/data.config.php');
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">

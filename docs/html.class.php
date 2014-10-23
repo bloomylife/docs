@@ -5,7 +5,7 @@
  * Date: 14-9-6
  * Time: 上午8:13
  */
-include_once('lib.class.php');
+include_once 'lib.class.php';
 class html {
     public $m;
     //访问的文档菜单值
@@ -14,16 +14,18 @@ class html {
     public $docs;
     //配置事项
     public $docsConfig;
-	//是否有其他模型下的文件
-	public $hasOtherModule = false;
+    //是否有其他模型下的文件
+    public $hasOtherModule = false;
+    //统一CONFIG配置
+    public static $commonDataConfig = array();
 
     public function __construct($m, $menu, $docs, $docsConfig) {
         $this->m = $m;
         $this->menu = $menu;
-		lib::resolveMethod($this->m, $this->menu);
-		if ($this->m != $m) $this->hasOtherModule = true;
         $this->docs = $docs;
         $this->docsConfig = $docsConfig;
+        lib::resolveMethod($this->m, $this->menu);
+        if ($this->m != $m) $this->hasOtherModule = true;
     }
 
     /**
@@ -107,7 +109,7 @@ class html {
         if ($isChild){
             return '<h4>'.$itemValue.'</h4>';
         } else {
-			$menus = $this->hasOtherModule ? $this->m.'-'.$this->menu : $this->menu;
+            $menus = $this->hasOtherModule ? $this->m.'-'.$this->menu : $this->menu;
             return '<h3 id="'.$menus.'-'.$item.'">'. $itemValue .'</h3>';
         }
     }
@@ -206,8 +208,13 @@ class html {
                 $dt = substr($data, 1, -1);
                 if ($dt == 'CONFIG') {
                     $desc =  lib::getConfig($this->m);
-                    foreach($desc[$this->menu] as $kk => $v) {
-                        $rtn .= $kk .'：'. $v . '\n';
+                    if (array_key_exists($this->menu, $desc)) {
+                        $rtn = $this->arrayToString(self::$commonDataConfig);
+                        foreach($desc[$this->menu] as $kk => $v) {
+                            $rtn .= $this->code($kk, 'code-small') .'：'. $v . '\n';
+                        }
+                    } else {
+                        $rtn .= $this->alertInfo('Method',  $this->code($this->m.'->'.$this->menu) .' 不存在!');
                     }
                 } elseif ($dt == 'LIST') {
 
@@ -226,6 +233,31 @@ class html {
         }
 
         return str_replace('\n', '<br />', $rtn);
+    }
+
+    /**
+     * @param $code
+     * @return string
+     */
+    public function code($code, $class = '') {
+        return '<code class="'.$class.'">'. $code . '</code>';
+    }
+
+    private function alertInfo($header, $info) {
+        return '<div class="alert alert-danger alert-dismissible fade in" role="alert">
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+      <strong>'.$header.'：</strong>'. $info .'</div>';
+    }
+
+    private function arrayToString($array) {
+        $rtn = "";
+        if (!empty($array)) {
+            foreach($array as $kk => $v) {
+                $rtn .= $this->code($kk, 'code-small') .'：'. $v . '\n';
+            }
+        }
+
+        return $rtn;
     }
 
 } 
