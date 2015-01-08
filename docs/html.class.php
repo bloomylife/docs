@@ -148,46 +148,50 @@ class html {
 
         $tables = $this->tableHandler($datas);
 
-        $html .= $tables['theads'] .'</tr></thead><tbody>';
+        $html .= $tables['theads'] .'</thead><tbody>';
         $html .= $tables['tbodys'] .'</tbody></table></div>';
 
         return $html;
     }
 
-    private function tableHandler($datas, $isList = false) {
+    private function tableHandler($datas, $level = 0, $colName = '#LIST#') {
         $columnsConfig = $this->docsConfig['tableColumns'];
 
         $theads = $tbodys = '';
         $isThead = true;
 
-        if ($isList) {
-            $tbodys = '<tr><th colspan="'.count($columnsConfig).'">LIST</th></tr>';
+        if ($level) {
+            $cn = $colName != '#LIST#' ? $colName : 'LIST';
+            if ($level > 1) {
+                $cn = str_repeat('&nbsp;', 4*($level-1)) .'-&gt; '. $cn;
+            }
+            $tbodys = '<tr><th colspan="'.count($columnsConfig).'">'. $cn .'</th></tr>';
         }
 
         foreach ($datas as $data) {
             if (!is_array($data)) break;
-            $tbodys .= '<tr>';
 
             $columns = array_keys($data);
+            if (count($columns) == 0) break;
 
+            $tb = '';
             foreach ($columns as $col) {
                 if (array_key_exists($col, $columnsConfig)) {
-                    if ($isThead && !$isList) {
+                    if ($isThead && !$level) {
                         $theads .= '<th>'.$columnsConfig[$col].'</th>';
                     }
 
                     $nowrap = $col=='parameter'||$col=='name' ? ' class="text-nowrap"' : '';
-                    $subFlag = $isList && $col=='parameter' ? str_repeat('&nbsp;', 4).'-&gt;' : '';
-                    $tbodys .= '<td'.$nowrap.'>'.$subFlag.$this->dataHandler($data[$col]).'</td>';
-                } elseif ($col == '#LIST#') {
-                    $res = $this->tableHandler($data['#LIST#'], true);
+                    $subFlag = $level && $col=='parameter' ? str_repeat('&nbsp;', 4*$level).'-&gt; ' : '';
+                    $tb .= '<td'.$nowrap.'>'.$subFlag.$this->dataHandler($data[$col]).'</td>';
+                } elseif (is_array($data[$col])) {
+                    $res = $this->tableHandler($data[$col], $level+1 , $col);
                     $theads .= $res['theads'];
                     $tbodys .= $res['tbodys'];
                 }
             }
             $isThead = false;
-
-            $tbodys .= '</tr>';
+            if ($tb) $tbodys .= '<tr>'. $tb .'</tr>';
         }
         return array('theads' => $theads, 'tbodys' => $tbodys);
     }
@@ -260,4 +264,4 @@ class html {
         return $rtn;
     }
 
-} 
+}

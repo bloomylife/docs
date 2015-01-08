@@ -66,6 +66,44 @@ return array(
             'required'       => '是',
             'description'   => '每次成功登录返回一个新的秘钥'
         ),
+		array(
+            'result' => array(
+                array(
+                    'parameter'     => 'secret',
+                    'name'          => '秘钥',
+                    'required'       => '是',
+                    'description'   => '每次成功登录返回一个新的秘钥'
+                ),
+                array(
+                    'demo' => array(
+                        array(
+                            'parameter'     => 'demo',
+                            'name'          => '测试',
+                            'required'       => '是',
+                            'description'   => '每次成功登录返回一个新的秘钥'
+                        ),
+                        array(
+                            'demo3' => array(
+                                array(
+                                    'parameter'     => 'demo3',
+                                    'name'          => '测试',
+                                    'required'       => '是',
+                                    'description'   => '每次成功登录返回一个新的秘钥'
+                                ),
+                            )
+                        )
+                    ),
+                    'demo2' => array(
+                        array(
+                            'parameter'     => 'demo2',
+                            'name'          => '测试',
+                            'required'       => '是',
+                            'description'   => '每次成功登录返回一个新的秘钥'
+                        ),
+                    )
+                )
+            )
+        )
         /*array(
             'parameter'     => 'status',
             'name'          => '用户状态',
